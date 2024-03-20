@@ -14,8 +14,11 @@ import { UsersService } from './users.service';
 // Controller
 import { UsersController } from './users.controller';
 
+// Modules
+import { PhonesModule } from '../phones/phones.module';
+
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity])],
+  imports: [TypeOrmModule.forFeature([UserEntity]), PhonesModule],
   providers: [UsersRepository, UsersService],
   controllers: [UsersController],
 })

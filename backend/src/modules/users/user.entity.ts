@@ -1,4 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+// Core
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+
+// Entities
+import { PhoneEntity } from '../phones/phone.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -25,4 +29,7 @@ export class UserEntity {
 
   @Column({ name: 'flat', type: 'int' })
   public readonly flat: number;
+
+  @OneToMany(() => PhoneEntity, (photo) => photo.user, { cascade: true })
+  public readonly phones: PhoneEntity[];
 }

@@ -13,12 +13,14 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 // Services
+import { PhonesService } from '../phones/phones.service';
 import { TransactionService } from '../core/modules/database/transaction.service';
 
 @Injectable()
 export class UsersService {
   public constructor(
     private usersRepository: UsersRepository,
+    private phonesService: PhonesService,
     private transactionService: TransactionService
   ) {}
 
@@ -33,6 +35,7 @@ export class UsersService {
   public async create(user: CreateUserDto): Promise<UserEntity> {
     try {
       return await this.transactionService.transaction<UserEntity>(async (tx) => {
+        await Promise.all(user.phones.map((phone) => this.phonesService.create(phone, tx)));
         return await this.usersRepository.create(user, tx);
       });
     } catch (error) {
@@ -41,9 +44,18 @@ export class UsersService {
   }
 
   public async update(id: string, user: UpdateUserDto): Promise<UserEntity> {
-    await this.checkExists(id);
+    const row = await this.checkExists(id);
+
     try {
-      return await this.usersRepository.update(id, user);
+      return await this.transactionService.transaction<UserEntity>(async (tx) => {
+        if (user.phones) {
+          const deletedPhones = row.phones.filter((p1) => !user.phones.some((p2) => p2.id === p1.id));
+          await Promise.all(deletedPhones.map((phone) => this.phonesService.delete(phone.id, tx)));
+          await Promise.all(user.phones.map((phone) => this.phonesService.update(phone.id, phone, tx)));
+        }
+
+        return await this.usersRepository.update(id, user, tx);
+      });
     } catch (error) {
       throw new HttpException(error.message, error.status || 500);
     }

@@ -22,20 +22,21 @@ export class UsersRepository {
   }
 
   public async findAll(): Promise<[UserEntity[], number]> {
-    return this.usersRepository.findAndCount();
+    return this.usersRepository.findAndCount({ relations: ['phones'] });
   }
 
   public async findById(id: string, tx?: EntityManager): Promise<UserEntity | null> {
-    return this.getRepository(tx).findOneBy({ id });
+    return this.getRepository(tx).findOne({ where: { id }, relations: ['phones'] });
   }
 
   public async create(user: CreateUserDto, tx?: EntityManager): Promise<UserEntity> {
-    return this.getRepository(tx).save(user);
+    const createdUser = await this.getRepository(tx).save(user);
+    return this.findById(createdUser.id, tx) as unknown as UserEntity;
   }
 
   public async update(id: string, user: UpdateUserDto, tx?: EntityManager): Promise<UserEntity> {
-    await this.getRepository(tx).update(id, user);
-    return this.getRepository(tx).findOne({ where: { id } }) as unknown as UserEntity;
+    await this.getRepository(tx).save({ id, ...user });
+    return this.findById(id, tx) as unknown as UserEntity;
   }
 
   public async delete(id: string, tx?: EntityManager): Promise<void> {
