@@ -1,5 +1,5 @@
 // Core
-import { createZodDto } from 'nestjs-zod';
+import { createZodDto, patchNestJsSwagger } from 'nestjs-zod';
 import { z } from 'nestjs-zod/z';
 
 // Schemas
@@ -17,3 +17,4 @@ export const UserSchema = z.object({
 });
 
 export class CreateUserDto extends createZodDto(UserSchema) {}
+patchNestJsSwagger();

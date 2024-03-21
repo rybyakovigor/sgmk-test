@@ -1,5 +1,5 @@
 // Core
-import { createZodDto } from 'nestjs-zod';
+import { createZodDto, patchNestJsSwagger } from 'nestjs-zod';
 import { z } from 'zod';
 
 // Schemas
@@ -15,3 +15,4 @@ const UpdateUserSchema = z
   .partial();
 
 export class UpdateUserDto extends createZodDto(UpdateUserSchema) {}
+patchNestJsSwagger();

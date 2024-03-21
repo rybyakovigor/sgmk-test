@@ -13,5 +13,5 @@ export class PhoneEntity {
   public readonly number: string;
 
   @ManyToOne(() => UserEntity, (user) => user.phones, { onDelete: 'CASCADE' })
-  public readonly user: UserEntity;
+  public readonly user?: UserEntity;
 }
