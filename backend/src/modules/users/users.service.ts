@@ -17,6 +17,9 @@ import { PhonesService } from '../phones/phones.service';
 import { TransactionService } from '../core/modules/database/transaction.service';
 import { FilesService } from '../files/files.service';
 
+// Query
+import { UsersQuery } from './users.query';
+
 @Injectable()
 export class UsersService {
   public constructor(
@@ -26,8 +29,8 @@ export class UsersService {
     private transactionService: TransactionService
   ) {}
 
-  public async findAll(): Promise<[UserEntity[], number]> {
-    return await this.usersRepository.findAll();
+  public async findAll(query: UsersQuery): Promise<[UserEntity[], number]> {
+    return await this.usersRepository.findAll(query);
   }
 
   public async findById(id: string, tx?: EntityManager): Promise<UserEntity> {

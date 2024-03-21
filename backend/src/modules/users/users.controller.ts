@@ -12,8 +12,9 @@ import {
   UseInterceptors,
   UploadedFile,
   ParseUUIDPipe,
+  Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags, ApiConsumes, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiTags, ApiConsumes, ApiResponse, ApiQuery } from '@nestjs/swagger';
 
 // Services
 import { UsersService } from './users.service';
@@ -31,16 +32,28 @@ import { FileInterceptor } from '@nestjs/platform-express';
 // Swagger
 import { UsersSwagger } from './users.swagger';
 
+// Query
+import { UsersQuery } from './users.query';
+
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
   public constructor(private readonly usersService: UsersService) {}
 
+  @ApiQuery({ name: 'name', description: 'Фильтр по имени', required: false })
+  @ApiQuery({ name: 'surname', description: 'Фильтр по фамилии', required: false })
+  @ApiQuery({ name: 'patronymic', description: 'Фильтр по отчеству', required: false })
+  @ApiQuery({ name: 'city', description: 'Фильтр по городу', required: false })
+  @ApiQuery({ name: 'street', description: 'Фильтр по улице', required: false })
+  @ApiQuery({ name: 'house', description: 'Фильтр по дому', required: false })
+  @ApiQuery({ name: 'flat', description: 'Фильтр по квартире', required: false })
+  @ApiQuery({ name: 'limit', description: 'Количество выводимых записей, по умолчанию 10', required: false })
+  @ApiQuery({ name: 'offset', description: 'Сдвиг по записям, по умолчанию 0', required: false })
   @ApiOperation(UsersSwagger.findAllSummary)
   @ApiResponse(UsersSwagger.findAllOkResponse)
   @Get()
-  public async findAll(): Promise<[UserEntity[], number]> {
-    return await this.usersService.findAll();
+  public async findAll(@Query() query: UsersQuery): Promise<[UserEntity[], number]> {
+    return await this.usersService.findAll(query);
   }
 
   @ApiOperation(UsersSwagger.createSummary)

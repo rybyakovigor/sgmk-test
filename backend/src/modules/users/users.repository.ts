@@ -10,6 +10,9 @@ import { UserEntity } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
+// Query
+import { UsersQuery } from './users.query';
+
 @Injectable()
 export class UsersRepository {
   public constructor(
@@ -21,8 +24,15 @@ export class UsersRepository {
     return tx?.getRepository(UserEntity) || this.usersRepository;
   }
 
-  public async findAll(): Promise<[UserEntity[], number]> {
-    return this.usersRepository.findAndCount({ relations: ['phones'] });
+  public async findAll(query: UsersQuery): Promise<[UserEntity[], number]> {
+    const { name, surname, patronymic, city, street, house, flat, limit, offset } = query;
+
+    return this.usersRepository.findAndCount({
+      relations: ['phones'],
+      where: { name, surname, patronymic, city, street, house, flat },
+      take: limit,
+      skip: offset,
+    });
   }
 
   public async findById(id: string, tx?: EntityManager): Promise<UserEntity | null> {
