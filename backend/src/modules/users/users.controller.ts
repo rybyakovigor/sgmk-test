@@ -11,6 +11,7 @@ import {
   HttpStatus,
   UseInterceptors,
   UploadedFile,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiConsumes, ApiResponse } from '@nestjs/swagger';
 
@@ -53,7 +54,10 @@ export class UsersController {
   @ApiResponse(UsersSwagger.updateOkResponse)
   @ApiResponse(UsersSwagger.findOneNotFoundResponse)
   @Put(':id')
-  public async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<UserEntity> {
+  public async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateUserDto: UpdateUserDto
+  ): Promise<UserEntity> {
     return await this.usersService.update(id, updateUserDto);
   }
 
@@ -61,7 +65,7 @@ export class UsersController {
   @ApiResponse(UsersSwagger.findOneOkResponse)
   @ApiResponse(UsersSwagger.findOneNotFoundResponse)
   @Get(':id')
-  public async findById(@Param('id') id: string): Promise<UserEntity | null> {
+  public async findById(@Param('id', ParseUUIDPipe) id: string): Promise<UserEntity | null> {
     return await this.usersService.findById(id);
   }
 
@@ -70,7 +74,7 @@ export class UsersController {
   @ApiResponse(UsersSwagger.findOneNotFoundResponse)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  public async delete(@Param('id') id: string): Promise<void> {
+  public async delete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return await this.usersService.delete(id);
   }
 
@@ -91,7 +95,7 @@ export class UsersController {
   @ApiConsumes('multipart/form-data')
   public async uploadAvatar(
     @UploadedFile() file: Express.Multer.File,
-    @Param('id') id: string
+    @Param('id', ParseUUIDPipe) id: string
   ): Promise<{ path: string }> {
     return this.usersService.uploadAvatar(id, file);
   }
@@ -102,7 +106,7 @@ export class UsersController {
   @ApiResponse(UsersSwagger.findOneNotFoundResponse)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id/delete-avatar')
-  public async deleteAvatar(@Param('id') id: string): Promise<void> {
+  public async deleteAvatar(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     await this.usersService.deleteAvatar(id);
   }
 }
