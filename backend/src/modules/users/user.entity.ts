@@ -30,6 +30,9 @@ export class UserEntity {
   @Column({ name: 'flat', type: 'int' })
   public readonly flat: number;
 
+  @Column({ name: 'avatar', type: 'varchar', nullable: true })
+  public readonly avatar: string | null;
+
   @OneToMany(() => PhoneEntity, (photo) => photo.user, { cascade: true })
   public readonly phones: PhoneEntity[];
 }

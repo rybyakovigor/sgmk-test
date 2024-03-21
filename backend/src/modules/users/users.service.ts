@@ -1,5 +1,5 @@
 // Core
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { EntityManager } from 'typeorm';
 
 // Entity
@@ -15,12 +15,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 // Services
 import { PhonesService } from '../phones/phones.service';
 import { TransactionService } from '../core/modules/database/transaction.service';
+import { FilesService } from '../files/files.service';
 
 @Injectable()
 export class UsersService {
   public constructor(
     private usersRepository: UsersRepository,
     private phonesService: PhonesService,
+    private filesService: FilesService,
     private transactionService: TransactionService
   ) {}
 
@@ -49,7 +51,7 @@ export class UsersService {
     try {
       return await this.transactionService.transaction<UserEntity>(async (tx) => {
         if (user.phones) {
-          const deletedPhones = row.phones.filter((p1) => !user.phones.some((p2) => p2.id === p1.id));
+          const deletedPhones = row.phones.filter((p1) => !user.phones?.some((p2) => p2.id === p1.id));
           await Promise.all(deletedPhones.map((phone) => this.phonesService.delete(phone.id, tx)));
           await Promise.all(user.phones.map((phone) => this.phonesService.update(phone.id, phone, tx)));
         }
@@ -65,6 +67,36 @@ export class UsersService {
     await this.checkExists(id);
     try {
       await this.usersRepository.delete(id);
+    } catch (error) {
+      throw new HttpException(error.message, error.status || 500);
+    }
+  }
+
+  public async uploadAvatar(id: string, file: Express.Multer.File): Promise<{ path: string }> {
+    const user = await this.checkExists(id);
+    if (user.avatar) {
+      throw new ConflictException(`User with id ${id} already has avatar`);
+    }
+
+    try {
+      const path = await this.filesService.create(file);
+      await this.usersRepository.update(id, { avatar: path });
+      return { path };
+    } catch (error) {
+      throw new HttpException(error.message, error.status || 500);
+    }
+  }
+
+  public async deleteAvatar(id: string): Promise<void> {
+    const user = await this.checkExists(id);
+    try {
+      await this.transactionService.transaction<void>(async (tx) => {
+        await this.usersRepository.update(id, { avatar: null }, tx);
+        if (!user.avatar) {
+          throw new ConflictException(`User with id ${id} has no avatar`);
+        }
+        await this.filesService.delete(user.avatar);
+      });
     } catch (error) {
       throw new HttpException(error.message, error.status || 500);
     }

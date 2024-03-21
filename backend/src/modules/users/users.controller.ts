@@ -1,5 +1,17 @@
 // Core
-import { Controller, Post, Body, Get, Put, Delete, Param, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Put,
+  Delete,
+  Param,
+  HttpCode,
+  HttpStatus,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
 
 // Services
 import { UsersService } from './users.service';
@@ -9,6 +21,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 
 // Entity
 import { UserEntity } from './user.entity';
+
+// Interceptors
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
 export class UsersController {
@@ -37,6 +52,21 @@ export class UsersController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   public async delete(@Param('id') id: string): Promise<void> {
-    await this.usersService.delete(id);
+    return await this.usersService.delete(id);
+  }
+
+  @Post(':id/upload-avatar')
+  @UseInterceptors(FileInterceptor('file'))
+  public async uploadAvatar(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('id') id: string
+  ): Promise<{ path: string }> {
+    return this.usersService.uploadAvatar(id, file);
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':id/delete-avatar')
+  public async deleteAvatar(@Param('id') id: string): Promise<void> {
+    await this.usersService.deleteAvatar(id);
   }
 }
