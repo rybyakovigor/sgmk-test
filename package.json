@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
+    "install:backend": "cd backend && yarn",
+    "dev:backend": "cd backend && npm run start:dev",
     "check:backend": "cd backend && npm run check:all",
     "check:frontend": "cd frontend && npm run check:all",
     "fix:backend": "cd backend && npm run fix:all",

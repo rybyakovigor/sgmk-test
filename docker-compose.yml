@@ -1,0 +1,16 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: sgmk-backend
+    env_file:
+      - ./backend/.env
+    volumes:
+      - uploads:/usr/src/app/uploads
+    restart: always
+    ports:
+      - "7777:3000"
+    command: node dist/main.js
+
+volumes:
+  uploads:
