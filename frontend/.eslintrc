@@ -1,0 +1,59 @@
+{
+  "root": true,
+  "extends": [
+    "@nuxt/eslint-config",
+    "plugin:sonarjs/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "parser": "vue-eslint-parser",
+  "parserOptions": {
+    "parser": "@typescript-eslint/parser",
+    "project": [
+      "./tsconfig.json"
+    ],
+    "sourceType": "module",
+    "ecmaVersion": "latest"
+  },
+  "plugins": [
+    "sonarjs"
+  ],
+  "rules": {
+    "@typescript-eslint/explicit-member-accessibility": "error",
+    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/unbound-method": "off",
+    "@typescript-eslint/explicit-function-return-type": [
+      "error",
+      {
+        "allowExpressions": true
+      }
+    ],
+    "no-else-return": [
+      "error",
+      {
+        "allowElseIf": false
+      }
+    ],
+    "no-console": [
+      "error",
+      {
+        "allow": [
+          "info",
+          "warn",
+          "error"
+        ]
+      }
+    ],
+    "no-nested-ternary": "error",
+    "@typescript-eslint/no-non-null-assertion": "warn",
+    "sonarjs/no-duplicate-string": [
+      "error",
+      {
+        "threshold": 2
+      }
+    ],
+    "prettier/prettier": "off"
+  },
+  "ignorePatterns": [
+    "src/**/*.test.ts"
+  ]
+}
