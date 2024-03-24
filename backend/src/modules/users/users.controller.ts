@@ -97,7 +97,8 @@ export class UsersController {
   @ApiResponse(UsersSwagger.uploadAvatarConflictResponse)
   @ApiResponse(UsersSwagger.findOneNotFoundResponse)
   @HttpCode(HttpStatus.OK)
-  @Post(':id/upload-avatar')
+  // eslint-disable-next-line sonarjs/no-duplicate-string
+  @Post(':id/avatar')
   @UseInterceptors(
     FileInterceptor('file', {
       limits: {
@@ -118,7 +119,7 @@ export class UsersController {
   @ApiResponse(UsersSwagger.deleteAvatarConflictResponse)
   @ApiResponse(UsersSwagger.findOneNotFoundResponse)
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Delete(':id/delete-avatar')
+  @Delete(':id/avatar')
   public async deleteAvatar(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     await this.usersService.deleteAvatar(id);
   }

@@ -1,7 +1,7 @@
 // Core
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Repository } from 'typeorm';
+import { EntityManager, Repository, In } from 'typeorm';
 
 // Entity
 import { UserEntity } from './user.entity';
@@ -29,7 +29,15 @@ export class UsersRepository {
 
     return this.usersRepository.findAndCount({
       relations: ['phones'],
-      where: { name, surname, patronymic, city, street, house, flat },
+      where: {
+        name: Array.isArray(name) ? In(name) : name,
+        surname: Array.isArray(surname) ? In(surname) : surname,
+        patronymic: Array.isArray(patronymic) ? In(patronymic) : patronymic,
+        city: Array.isArray(city) ? In(city) : city,
+        street: Array.isArray(street) ? In(street) : street,
+        house: Array.isArray(house) ? In(house) : house,
+        flat: Array.isArray(flat) ? In(flat) : flat,
+      },
       take: limit,
       skip: offset,
     });

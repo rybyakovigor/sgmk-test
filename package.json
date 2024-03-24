@@ -4,7 +4,9 @@
   "description": "",
   "scripts": {
     "install:backend": "cd backend && yarn",
+    "install:frontend": "cd frontend && yarn",
     "dev:backend": "cd backend && npm run start:dev",
+    "dev:frontend": "cd frontend && npm run dev",
     "check:backend": "cd backend && npm run check:all",
     "check:frontend": "cd frontend && npm run check:all",
     "fix:backend": "cd backend && npm run fix:all",
@@ -14,8 +16,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@commitlint/cli": "^19.2.0",
-    "@commitlint/config-conventional": "^19.1.0",
-    "husky": "^8.0.0"
+    "@commitlint/cli": "19.2.0",
+    "@commitlint/config-conventional": "19.1.0",
+    "husky": "8.0.0"
   }
 }
