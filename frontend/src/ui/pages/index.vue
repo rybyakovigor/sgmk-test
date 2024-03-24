@@ -1,39 +1,19 @@
 <template>
   <NuxtLayout name="main">
-    <v-table>
-      <thead>
-        <tr>
-          <th class="text-left">Name</th>
-          <th class="text-left">Calories</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in desserts" :key="item.name">
-          <td>{{ item.name }}</td>
-          <td>{{ item.calories }}</td>
-        </tr>
-      </tbody>
-    </v-table>
+    <UsersTable
+      :users="users"
+      :get-all="userStore.getAll"
+      :delete="userStore.delete"
+      :update="userStore.update"
+      :create="userStore.create"
+      :upload-avatar="userStore.uploadAvatar"
+      :delete-avatar="userStore.deleteAvatar"
+    />
   </NuxtLayout>
 </template>
 
 <script setup lang="ts">
-const desserts = [
-  {
-    name: 'Frozen Yogurt',
-    calories: 159,
-  },
-  {
-    name: 'Ice cream sandwich',
-    calories: 237,
-  },
-  {
-    name: 'Eclair',
-    calories: 262,
-  },
-  {
-    name: 'Cupcake',
-    calories: 305,
-  },
-];
+const userStore = useUsersStore();
+const { users } = storeToRefs(userStore);
+await useAsyncData('users', () => userStore.getAll());
 </script>
