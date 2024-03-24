@@ -3,12 +3,12 @@ import { createZodDto } from 'nestjs-zod';
 import { z } from 'nestjs-zod/z';
 
 export const UsersQuerySchema = z.object({
-  name: z.string().optional(),
-  surname: z.string().optional(),
-  patronymic: z.string().optional(),
-  city: z.string().optional(),
-  street: z.string().optional(),
-  house: z.string().optional(),
+  name: z.string().or(z.array(z.string())).optional(),
+  surname: z.string().or(z.array(z.string())).optional(),
+  patronymic: z.string().or(z.array(z.string())).optional(),
+  city: z.string().or(z.array(z.string())).optional(),
+  street: z.string().or(z.array(z.string())).optional(),
+  house: z.string().or(z.array(z.string())).optional(),
   flat: z
     .string()
     .transform((value) => Number(value))

@@ -7,7 +7,7 @@ import { PhoneSchema } from './create-phone.dto';
 
 export const UpdatePhoneSchema = z.object({
   ...PhoneSchema.shape,
-  id: z.string().ulid(),
+  id: z.string().uuid().optional(),
 });
 
 export class UpdatePhoneDto extends createZodDto(UpdatePhoneSchema) {}

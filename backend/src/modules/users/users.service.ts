@@ -56,7 +56,11 @@ export class UsersService {
         if (user.phones) {
           const deletedPhones = row.phones.filter((p1) => !user.phones?.some((p2) => p2.id === p1.id));
           await Promise.all(deletedPhones.map((phone) => this.phonesService.delete(phone.id, tx)));
-          await Promise.all(user.phones.map((phone) => this.phonesService.update(phone.id, phone, tx)));
+          await Promise.all(
+            user.phones.map((phone) =>
+              phone.id ? this.phonesService.update(phone.id, phone, tx) : this.phonesService.create(phone, tx)
+            )
+          );
         }
 
         return await this.usersRepository.update(id, user, tx);
