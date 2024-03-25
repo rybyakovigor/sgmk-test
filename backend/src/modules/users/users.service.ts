@@ -109,7 +109,7 @@ export class UsersService {
     }
   }
 
-  private async checkExists(id: string, tx?: EntityManager): Promise<UserEntity> {
+  public async checkExists(id: string, tx?: EntityManager): Promise<UserEntity> {
     try {
       const user = await this.usersRepository.findById(id, tx);
       if (!user) {
