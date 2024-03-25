@@ -1,6 +1,45 @@
 # Тестовое задания SGMK
 
-Приложение состоит из `backend` (развернут на [NestJS](https://docs.nestjs.com/) версия cli `10.0.0`) и `frontend` (развернут на [NuxtJS](https://nuxt.com/docs/getting-started/installation) версия `3.11.1`). 
+Реализовано:
+- api
+- таблица (фильтр для колонки городов, остальные можно сделать по аналогии)
+- форма добавления/редактирования с валидацией на бэке/фронте
+- удаление
+- несколько номеров - на бэке норм, на фронте немного костыльно, не хватило времени на разобраться с vue
+- добавление фото - на бэке норм, на фронте опять же немного костыльно из-за времени
+- код типизирован
+- запускается на localhost
+- git
+- зависимости в ignore
+- база postgres
+- линтеры настроены
+- таблица отдельным компонентом, но на рефактор не хватило времени
+- docker
+- тесты немного для бэка, больше нет, чем да
+- swagger
+- ssr
+
+Не реализовано:
+- Веб сокеты
+- PWA
+
+Приложение состоит из `backend`: 
+
+- [NestJS](https://docs.nestjs.com/) версия cli `10.0.0`
+- ORM - [TypeORM](https://typeorm.io/)
+- БД - postgres
+- Валидация - [Zod](https://zod.dev/)
+- Файловое хранилище - [Serve Static](https://docs-nestjs.netlify.app/recipes/serve-static)
+- Swagger
+
+и `frontend`:
+- [NuxtJS](https://nuxt.com/docs/getting-started/installation) версия `3.11.1`
+- Стейт менеджер - [Pinia](https://pinia.vuejs.org/)
+- Валидация - [Zod](https://zod.dev/)
+- UI - [Vuetify](https://vuetifyjs.com/)
+
+## Документация API
+Swagger доступен по роуту `/docs`
 
 ## Запуск с помощью docker compose
 
@@ -11,7 +50,7 @@
 $ docker compose up -d --build
 ```
 
-`backend` доступен по умолчанию на `7777` порту, изменить можно в `docker-compose.yml`.
+`backend` доступен по умолчанию на `7777` порту, `frontend` на `8888`, изменить можно в `docker-compose.yml`.
 
 или:
 
