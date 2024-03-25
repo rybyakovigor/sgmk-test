@@ -118,7 +118,7 @@
                       label="Телефон 2"
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="12" md="4" sm="6">
+                  <v-col v-if="editedIndex > -1" cols="12" md="4" sm="6">
                     <v-btn
                       v-if="editedUser.avatar"
                       @click="
@@ -191,7 +191,7 @@ const config = useRuntimeConfig();
 
 const dialog = ref(false);
 const dialogDelete = ref(false);
-const editedIndex = ref<number | null>(null);
+const editedIndex = ref(-1);
 const errors = ref(
   {} as ZodFormattedError<
     {
@@ -275,7 +275,7 @@ watch(activeFilters, async () => {
 });
 
 const filters = ref({
-  city: props.users.map((u) => u.city),
+  city: Array.from(new Set(props.users.map((user) => user.city))),
 });
 
 const filterValues = computed(() => {
@@ -318,7 +318,7 @@ const headers = [
   { title: 'Действия', key: 'actions', sortable: false },
 ];
 
-const formTitle = computed(() => (!editedIndex.value ? 'Создать абонента' : 'Редактировать абонента'));
+const formTitle = computed(() => (editedIndex.value > -1 ? 'Редактировать абонента' : 'Создать абонента'));
 
 watch(dialog, (newVal) => {
   if (!newVal) close();
@@ -351,8 +351,10 @@ const deleteItemConfirm = async (): Promise<void> => {
 const close = (): void => {
   dialog.value = false;
   nextTick(() => {
+    // @ts-ignore
+    errors.value = {};
     Object.assign(editedUser, defaultUser);
-    editedIndex.value = null;
+    editedIndex.value = -1;
   });
 };
 
@@ -360,7 +362,7 @@ const closeDelete = (): void => {
   dialogDelete.value = false;
   nextTick(() => {
     Object.assign(editedUser, defaultUser);
-    editedIndex.value = null;
+    editedIndex.value = -1;
   });
 };
 
@@ -368,13 +370,13 @@ const save = async (): Promise<void> => {
   const body = {
     ...editedUser,
     flat: Number(editedUser.flat),
-    phone1: editedUser.phones[0],
-    phone2: editedUser.phones[1],
+    phone1: editedUser.phones[0]?.trim(),
+    phone2: editedUser.phones[1] ? editedUser.phones[1]?.trim() : '',
   };
   const result = UserSchema.safeParse(body);
 
   if (result.success) {
-    if (editedIndex.value) {
+    if (editedIndex.value > -1) {
       await props.update(editedUser);
     } else {
       await props.create(editedUser);
