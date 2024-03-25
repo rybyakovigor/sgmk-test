@@ -12,5 +12,18 @@ services:
       - "7777:3000"
     command: node dist/main.js
 
+  frontend:
+    build:
+      context: ./frontend
+    container_name: sgmk-frontend
+    env_file:
+      - ./frontend/.env
+    restart: always
+    ports:
+      - "8888:3000"
+    command: node .output/server/index.mjs
+    depends_on:
+      - backend
+
 volumes:
   uploads:

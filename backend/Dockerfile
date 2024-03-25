@@ -1,4 +1,6 @@
-FROM node:18-bullseye-slim as builder
+ARG NODE_VERSION=20.11.1
+
+FROM node:${NODE_VERSION}-bullseye-slim as builder
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
@@ -11,7 +13,7 @@ RUN yarn install
 COPY . ./
 RUN yarn build
 
-FROM node:18-bullseye-slim
+FROM node:${NODE_VERSION}-bullseye-slim
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
